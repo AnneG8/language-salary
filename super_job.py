@@ -1,15 +1,16 @@
 import requests
 from secondary_functions import predict_salary
 
+
 def predict_rub_salary_sj(vacancy):
     currency = vacancy.get('currency')
     if currency and currency != 'rub':
         return
-    return predict_salary(vacancy.get('payment_from'), 
+    return predict_salary(vacancy.get('payment_from'),
                           vacancy.get('payment_to'))
 
 
-def get_sj_vacancy_stats(pl, secret_key, town = 4):
+def get_sj_vacancy_stats(pl, secret_key, town=4):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
         'X-Api-App-Id': secret_key

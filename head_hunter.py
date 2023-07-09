@@ -3,6 +3,7 @@ import time
 from itertools import count
 from secondary_functions import predict_salary
 
+
 def predict_rub_salary_hh(vacancy):
     salary = vacancy.get('salary')
     if not salary or salary.get('currency') != 'RUR':
@@ -10,7 +11,7 @@ def predict_rub_salary_hh(vacancy):
     return predict_salary(salary.get('from'), salary.get('to'))
 
 
-def get_hh_vacancy_stats(pl, area = '1', period = 30):
+def get_hh_vacancy_stats(pl, area='1', period=30):
     url = 'https://api.hh.ru/vacancies/'
     payload = {
         'text': f'программист {pl}',
