@@ -8,33 +8,33 @@ HH_TOP_LIST = [
 ]
 
 
-def print_table(title, salary_dict):
-    headers = [[
+def print_salary_table(title, salary_dict):
+    salary_headers = [[
         'Язык программирования', 'Вакансий найдено',
         'Вакансий обработано', 'Средняя зарплата'
     ]]
-    rows = [[pl,
-             salary_dict[pl]['vacancies_found'],
-             salary_dict[pl]['vacancies_processed'],
-             salary_dict[pl]['average_salary']]
+    salary_rows = [[pl,
+                    salary_dict[pl]['vacancies_found'],
+                    salary_dict[pl]['vacancies_processed'],
+                    salary_dict[pl]['average_salary']]
             for pl in salary_dict.keys()]
-    data = headers + rows
-    table_instance = AsciiTable(data, title)
+    salary_table = salary_headers + salary_rows
+    table_instance = AsciiTable(salary_table, title)
     print(table_instance.table)
 
 
 def main():
     env = Env()
     env.read_env()
-    secret_key = env('SECRET_KEY')
+    sj_secret_key = env('SJ_SECRET_KEY')
 
-    hh_result = {}
-    sj_result = {}
-    for pl in HH_TOP_LIST:
-        hh_result[pl] = get_hh_vacancy_stats(pl)
-        sj_result[pl] = get_sj_vacancy_stats(pl, secret_key)
-    print_table('HeadHunter Moscow', hh_result)
-    print_table('SuperJob Moscow', sj_result)
+    hh_salaries = {}
+    sj_salaries = {}
+    for language in HH_TOP_LIST:
+        hh_salaries[language] = get_hh_vacancy_stats(language)
+        sj_salaries[language] = get_sj_vacancy_stats(language, sj_secret_key)
+    print_salary_table('HeadHunter Moscow', hh_salaries)
+    print_salary_table('SuperJob Moscow', sj_salaries)
 
 
 if __name__ == '__main__':

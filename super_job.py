@@ -10,14 +10,14 @@ def predict_rub_salary_sj(vacancy):
                           vacancy.get('payment_to'))
 
 
-def get_sj_vacancy_stats(pl, secret_key, town=4):
+def get_sj_vacancy_stats(language, secret_key, town=4):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
         'X-Api-App-Id': secret_key
     }
     payload = {
         'catalogues': 33,
-        'keyword': f'программист {pl}',
+        'keyword': f'программист {language}',
         'town': town,
         'count': 100
     }
@@ -28,8 +28,8 @@ def get_sj_vacancy_stats(pl, secret_key, town=4):
         page_response = requests.get(url, headers=headers, params=payload)
         page_response.raise_for_status()
 
-        for obj in page_response.json()['objects']:
-            salaries.append(predict_rub_salary_sj(obj))
+        for vacancy in page_response.json()['objects']:
+            salaries.append(predict_rub_salary_sj(vacancy))
 
         if not page_response.json()['more']:
             break
@@ -37,7 +37,7 @@ def get_sj_vacancy_stats(pl, secret_key, town=4):
     salaries = list(filter(None, salaries))
 
     return {
-        'language': pl,
+        'language': language,
         'vacancies_found': page_response.json()['total'],
         'vacancies_processed': len(salaries),
         'average_salary': (int(sum(salaries) // len(salaries))

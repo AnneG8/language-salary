@@ -11,10 +11,10 @@ def predict_rub_salary_hh(vacancy):
     return predict_salary(salary.get('from'), salary.get('to'))
 
 
-def get_hh_vacancy_stats(pl, area='1', period=30):
+def get_hh_vacancy_stats(language, area='1', period=30):
     url = 'https://api.hh.ru/vacancies/'
     payload = {
-        'text': f'программист {pl}',
+        'text': f'программист {language}',
         'area': area,
         'period': period,
     }
@@ -25,8 +25,8 @@ def get_hh_vacancy_stats(pl, area='1', period=30):
         page_response = requests.get(url, params=payload)
         page_response.raise_for_status()
 
-        for item in page_response.json()['items']:
-            salaries.append(predict_rub_salary_hh(item))
+        for vacancy in page_response.json()['items']:
+            salaries.append(predict_rub_salary_hh(vacancy))
 
         if page >= page_response.json()['pages'] - 1:
             break
@@ -35,7 +35,7 @@ def get_hh_vacancy_stats(pl, area='1', period=30):
     salaries = list(filter(None, salaries))
 
     return {
-        'language': pl,
+        'language': language,
         'vacancies_found': page_response.json()['found'],
         'vacancies_processed': len(salaries),
         'average_salary': (int(sum(salaries) // len(salaries))
