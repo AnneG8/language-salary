@@ -27,18 +27,19 @@ def get_sj_vacancy_stats(language, secret_key, town=4):
         payload['page'] = page
         page_response = requests.get(url, headers=headers, params=payload)
         page_response.raise_for_status()
+        json_answer = page_response.json()
 
-        for vacancy in page_response.json()['objects']:
+        for vacancy in json_answer['objects']:
             salaries.append(predict_rub_salary_sj(vacancy))
 
-        if not page_response.json()['more']:
+        if not json_answer['more']:
             break
 
     salaries = list(filter(None, salaries))
 
     return {
         'language': language,
-        'vacancies_found': page_response.json()['total'],
+        'vacancies_found': json_answer['total'],
         'vacancies_processed': len(salaries),
         'average_salary': (int(sum(salaries) // len(salaries))
                            if salaries else 0)
